@@ -39,6 +39,39 @@
 
 			<br />
 
+			<button
+				onclick={() => {
+					const obj = {
+						id: self.crypto.randomUUID(),
+						shutter_speed: null,
+						aperture: null,
+						ISO: null,
+						added_on: new Date().getTime(),
+					};
+					roll.shots = [...roll.shots, obj];
+				}}>Add shot</button>
+
+			<br />
+
+			{#if roll.shots.length > 0}
+				Shots:<br />
+			{/if}
+			<ul>
+				{#each roll.shots as shot}
+					<li>
+						<pre>{JSON.stringify(shot)}</pre>
+						<button
+							onclick={() => {
+								const index = roll.shots.findIndex((r) => r.id === shot.id);
+								console.log(index);
+								if (index !== -1) {
+									roll.shots.splice(index, 1);
+								}
+							}}>Remove</button>
+					</li>
+				{/each}
+			</ul>
+
 			{#if roll.editing}
 				<button onclick={() => (roll.editing = false)}>Finish editing</button>
 				<fieldset>
@@ -133,5 +166,8 @@
 <style lang="scss">
 	fieldset {
 		width: max-content;
+	}
+	li {
+		margin-top: 1rem;
 	}
 </style>
