@@ -23,6 +23,32 @@
 		console.log(data);
 		rolls.current = [data, ...rolls.current];
 	}
+
+	let GPSTestMessage = "";
+	function getLocation() {
+		GPSTestMessage = "⏳ Loading...";
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					GPSTestMessage = `✅ It works!<pre>${JSON.stringify(position, null, 2)}</pre>`;
+				},
+				(error) => {
+					// Handle different error scenarios
+					if (error.code === error.PERMISSION_DENIED) {
+						GPSTestMessage = "❌ Location access denied by the user.";
+					} else if (error.code === error.POSITION_UNAVAILABLE) {
+						GPSTestMessage = "❌ Location information is unavailable.";
+					} else if (error.code === error.TIMEOUT) {
+						GPSTestMessage = "❌ The request to get user location timed out.";
+					} else {
+						GPSTestMessage = "❌ An unknown error occurred while retrieving location.";
+					}
+				},
+			);
+		} else {
+			GPSTestMessage = "❌ Geolocation is not supported by this browser.";
+		}
+	}
 </script>
 
 <svelte:head>
@@ -73,6 +99,11 @@
 		{/each}
 	</datalist>
 </fieldset>
+
+<br />
+
+<button onclick={getLocation}>Test GPS</button>
+<div class="coordinates">{@html GPSTestMessage}</div>
 
 <hr />
 <h2>Your rolls</h2>
