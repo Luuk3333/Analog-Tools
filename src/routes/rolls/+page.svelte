@@ -1,6 +1,12 @@
 <script>
 	import { LocalStorage } from "$lib/storage.svelte";
-	import { products } from "$lib/products.js";
+	import { iso, aperture, shutterSpeed, products } from "$lib/datalists.js";
+
+	const currentCameraSettings = new LocalStorage("currentCameraSettings", {
+		iso: "",
+		aperture: "",
+		shutterSpeed: "",
+	});
 
 	const rolls = new LocalStorage("rolls", []);
 
@@ -26,6 +32,48 @@
 <h1>Rolls</h1>
 <p>Keep track of your film rolls.</p>
 
+<fieldset>
+	<legend>Current Camera Settings</legend>
+	<label for="current-iso">ISO:</label>
+	<input
+		type="text"
+		id="current-iso"
+		list="isos"
+		bind:value={currentCameraSettings.current.iso}
+		placeholder="400" />
+	<datalist id="isos">
+		{#each iso as value}
+			<option {value}></option>
+		{/each}
+	</datalist>
+	<br />
+	<label for="current-aperture">Aperture:</label>
+	<input
+		type="text"
+		id="current-aperture"
+		list="apertures"
+		bind:value={currentCameraSettings.current.aperture}
+		placeholder="f/8" />
+	<datalist id="apertures">
+		{#each aperture as value}
+			<option {value}></option>
+		{/each}
+	</datalist>
+	<br />
+	<label for="current-shutterSpeed">Shutter speed:</label>
+	<input
+		type="text"
+		id="current-shutterSpeed"
+		list="shutterSpeeds"
+		bind:value={currentCameraSettings.current.shutterSpeed}
+		placeholder="1/250" />
+	<datalist id="shutterSpeeds">
+		{#each shutterSpeed as value}
+			<option {value}></option>
+		{/each}
+	</datalist>
+</fieldset>
+
 <hr />
 <h2>Your rolls</h2>
 <button onclick={addRoll}>Add roll</button>
@@ -43,9 +91,9 @@
 				onclick={() => {
 					const obj = {
 						id: self.crypto.randomUUID(),
-						shutter_speed: null,
-						aperture: null,
-						ISO: null,
+						iso: currentCameraSettings.current.iso,
+						aperture: currentCameraSettings.current.aperture,
+						shutterSpeed: currentCameraSettings.current.shutterSpeed,
 						added_on: new Date().getTime(),
 					};
 					roll.shots = [...roll.shots, obj];
@@ -84,8 +132,8 @@
 						list="products"
 						placeholder="Kodak Portra 400" />
 					<datalist id="products">
-						{#each products.sort() as product}
-							<option value={product}></option>
+						{#each products.sort() as value}
+							<option {value}></option>
 						{/each}
 					</datalist>
 				</fieldset>
