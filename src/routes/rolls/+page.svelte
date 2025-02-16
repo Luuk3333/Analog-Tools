@@ -8,6 +8,10 @@
 		shutterSpeed: "",
 	});
 
+	const preferences = new LocalStorage("preferences", {
+		addGPSToNewShots: true,
+	});
+
 	const rolls = new LocalStorage("rolls", []);
 
 	let GPSTestMessage = "";
@@ -112,6 +116,13 @@
 <button onclick={testLocation}>Test GPS</button>
 <div class="coordinates">{@html GPSTestMessage}</div>
 
+<input
+	type="checkbox"
+	id="prefAddGPSToNewShots"
+	bind:checked={preferences.current.addGPSToNewShots}
+	onchange={() => (GPSTestMessage = "")} />
+<label for="prefAddGPSToNewShots">Add current GPS position to new shots</label>
+
 <hr />
 <h2>Your rolls</h2>
 <button
@@ -149,17 +160,19 @@
 					};
 					roll.shots = [...roll.shots, obj];
 
-					getLocation((error, position) => {
-						if (error) {
-							console.error(
-								"Failed to add GPS coordinates to new shot:",
-								error.message,
-							);
-						} else {
-							const index = roll.shots.findIndex((r) => r.id === uuid);
-							roll.shots[index].position = position;
-						}
-					});
+					if (preferences.current.addGPSToNewShots) {
+						getLocation((error, position) => {
+							if (error) {
+								console.error(
+									"Failed to add GPS coordinates to new shot:",
+									error.message,
+								);
+							} else {
+								const index = roll.shots.findIndex((r) => r.id === uuid);
+								roll.shots[index].position = position;
+							}
+						});
+					}
 				}}>Add shot</button>
 
 			<br />
