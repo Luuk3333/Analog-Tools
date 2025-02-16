@@ -113,15 +113,18 @@
 
 <br />
 
-<button onclick={testLocation}>Test GPS</button>
-<div class="coordinates">{@html GPSTestMessage}</div>
+<fieldset>
+	<legend>GPS Position</legend>
+	<button onclick={testLocation}>Test GPS</button>
+	<div class="coordinates">{@html GPSTestMessage}</div>
 
-<input
-	type="checkbox"
-	id="prefAddGPSToNewShots"
-	bind:checked={preferences.current.addGPSToNewShots}
-	onchange={() => (GPSTestMessage = "")} />
-<label for="prefAddGPSToNewShots">Add current GPS position to new shots</label>
+	<input
+		type="checkbox"
+		id="prefAddGPSToNewShots"
+		bind:checked={preferences.current.addGPSToNewShots}
+		onchange={() => (GPSTestMessage = "")} />
+	<label for="prefAddGPSToNewShots">Add current GPS position to new shots</label>
+</fieldset>
 
 <hr />
 <h2>Your rolls</h2>
