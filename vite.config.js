@@ -19,4 +19,9 @@ export default defineConfig({
 			ignored: ["**/scraper/**"],
 		},
 	},
+
+	// Service worker debugging - https://www.sarcevic.dev/offline-first-installable-pwa-sveltekit-workbox-precaching#a-little-bit-about-progressive-web-apps
+	define: {
+		"process.env.NODE_ENV": '"production"',
+	},
 });
