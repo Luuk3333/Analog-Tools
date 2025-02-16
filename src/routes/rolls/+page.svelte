@@ -11,6 +11,7 @@
 			shots: [],
 			product: "",
 			identifier: "",
+			notes: "",
 			added_on: new Date().getTime(),
 		};
 		console.log(data);
@@ -63,6 +64,9 @@
 						id="identifier"
 						bind:value={roll.identifier}
 						placeholder="251A" />
+					<br />
+					<label for="notes">Notes:</label>
+					<textarea id="notes" bind:value={roll.notes}></textarea>
 				</fieldset>
 				<br />
 			{:else}
