@@ -11,7 +11,7 @@
 	const rolls = new LocalStorage("rolls", []);
 
 	let GPSTestMessage = "";
-	function getLocation() {
+	function testLocation() {
 		GPSTestMessage = "⏳ Loading...";
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
@@ -19,7 +19,6 @@
 					GPSTestMessage = `✅ It works!<pre>${JSON.stringify(position, null, 2)}</pre>`;
 				},
 				(error) => {
-					// Handle different error scenarios
 					if (error.code === error.PERMISSION_DENIED) {
 						GPSTestMessage = "❌ Location access denied by the user.";
 					} else if (error.code === error.POSITION_UNAVAILABLE) {
@@ -33,6 +32,20 @@
 			);
 		} else {
 			GPSTestMessage = "❌ Geolocation is not supported by this browser.";
+		}
+	}
+	function getLocation(callback) {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					callback(null, position);
+				},
+				(error) => {
+					callback(error, null);
+				},
+			);
+		} else {
+			callback(new Error("Geolocation not supported"), null, null);
 		}
 	}
 </script>
@@ -84,11 +97,19 @@
 			<option {value}></option>
 		{/each}
 	</datalist>
+	<br />
+	<button
+		style="float:right;"
+		onclick={() => {
+			currentCameraSettings.current.iso = "";
+			currentCameraSettings.current.aperture = "";
+			currentCameraSettings.current.shutterSpeed = "";
+		}}>Clear</button>
 </fieldset>
 
 <br />
 
-<button onclick={getLocation}>Test GPS</button>
+<button onclick={testLocation}>Test GPS</button>
 <div class="coordinates">{@html GPSTestMessage}</div>
 
 <hr />
@@ -117,14 +138,28 @@
 
 			<button
 				onclick={() => {
+					const uuid = self.crypto.randomUUID();
 					const obj = {
-						id: self.crypto.randomUUID(),
+						id: uuid,
 						iso: currentCameraSettings.current.iso,
 						aperture: currentCameraSettings.current.aperture,
 						shutterSpeed: currentCameraSettings.current.shutterSpeed,
+						position: null,
 						added_on: new Date().getTime(),
 					};
 					roll.shots = [...roll.shots, obj];
+
+					getLocation((error, position) => {
+						if (error) {
+							console.error(
+								"Failed to add GPS coordinates to new shot:",
+								error.message,
+							);
+						} else {
+							const index = roll.shots.findIndex((r) => r.id === uuid);
+							roll.shots[index].position = position;
+						}
+					});
 				}}>Add shot</button>
 
 			<br />
@@ -135,11 +170,10 @@
 			<ul>
 				{#each roll.shots as shot}
 					<li>
-						<pre>{JSON.stringify(shot)}</pre>
+						<pre>{JSON.stringify(shot, null, 2)}</pre>
 						<button
 							onclick={() => {
 								const index = roll.shots.findIndex((r) => r.id === shot.id);
-								console.log(index);
 								if (index !== -1) {
 									roll.shots.splice(index, 1);
 								}
@@ -184,7 +218,6 @@
 			<button
 				onclick={() => {
 					const index = rolls.current.findIndex((r) => r.id === roll.id);
-					console.log(index);
 					if (index !== -1) {
 						rolls.current.splice(index, 1);
 					}
