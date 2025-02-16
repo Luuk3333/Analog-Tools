@@ -31,7 +31,11 @@
 <ul>
 	{#each rolls.current as roll}
 		<li>
-			{roll.product || `Roll #${roll.id.slice(0, 7)}`}
+			{roll.identifier || roll.product || `Roll #${roll.id.slice(0, 7)}`}
+			{#if roll.identifier}
+				&ndash; {roll.product}
+			{/if}
+
 			<br />
 
 			{#if roll.editing}
@@ -54,7 +58,11 @@
 				<fieldset>
 					<legend>Custom</legend>
 					<label for="identifier">Identifier:</label>
-					<input type="text" id="identifier" name="identifier" placeholder="251A" />
+					<input
+						type="text"
+						id="identifier"
+						bind:value={roll.identifier}
+						placeholder="251A" />
 				</fieldset>
 				<br />
 			{:else}
