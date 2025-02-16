@@ -84,7 +84,33 @@
 	{/each}
 </ul>
 
-{#if rolls.current.length > 0}
+{#if rolls.current.length === 0}
+	or
+	<br />
+	<button
+		onclick={() => {
+			const input = document.createElement("input");
+			input.type = "file";
+			input.accept = ".json";
+			input.onchange = async function (event) {
+				const file = event.target.files[0];
+				if (file) {
+					const reader = new FileReader();
+					reader.onload = function (e) {
+						try {
+							const importedData = JSON.parse(e.target.result);
+							rolls.current = importedData;
+							console.log("Imported JSON:", rolls.current);
+						} catch (error) {
+							console.error("Error parsing JSON:", error);
+						}
+					};
+					reader.readAsText(file);
+				}
+			};
+			input.click();
+		}}>Import JSON file</button>
+{:else}
 	<button
 		onclick={() => {
 			var blob = new Blob([JSON.stringify(rolls.current, null, 2)], {
