@@ -106,9 +106,9 @@
 		rolls.current = [data, ...rolls.current];
 	}}>Add roll</button>
 <ul>
-	{#each rolls.current as roll}
+	{#each rolls.current as roll, index}
 		<li>
-			{roll.identifier || roll.product || `Roll #${roll.id.slice(0, 7)}`}
+			{roll.identifier || roll.product || `Roll #${rolls.current.length - index}`}
 			{#if roll.identifier}
 				&ndash; {roll.product}
 			{/if}
