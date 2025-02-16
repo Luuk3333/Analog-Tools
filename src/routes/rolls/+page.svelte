@@ -1,5 +1,6 @@
 <script>
 	import { LocalStorage } from "$lib/storage.svelte";
+	import { products } from "$lib/products.js";
 
 	const rolls = new LocalStorage("rolls", []);
 
@@ -8,9 +9,7 @@
 		const data = {
 			id: self.crypto.randomUUID(),
 			shots: [],
-			brand: "",
 			product: "",
-			iso: null,
 			identifier: "",
 			added_on: new Date().getTime(),
 		};
@@ -32,42 +31,25 @@
 <ul>
 	{#each rolls.current as roll}
 		<li>
-			{roll.brand || `Roll #${roll.id.slice(0, 7)}`}
-			{roll.product}
+			{roll.product || `Roll #${roll.id.slice(0, 7)}`}
 			<br />
 
 			{#if roll.editing}
 				<button onclick={() => (roll.editing = false)}>Finish editing</button>
 				<fieldset>
 					<legend>Roll</legend>
-					<label for="brand">Brand:</label>
-					<input
-						type="text"
-						id="brand"
-						bind:value={roll.brand}
-						list="brands"
-						placeholder="Kodak" />
-					<datalist id="brands">
-						<option value="Kodak"></option>
-						<option value="Ilford"></option>
-					</datalist>
-					<br />
 					<label for="product">Product:</label>
 					<input
 						type="text"
 						id="product"
 						bind:value={roll.product}
 						list="products"
-						placeholder="Portra 400" />
+						placeholder="Kodak Portra 400" />
 					<datalist id="products">
-						<option value="Portra 160"></option>
-						<option value="Portra 400"></option>
-						<option value="Portra 800"></option>
-						<option value="Delta 3200"></option>
+						{#each products.sort() as product}
+							<option value={product}></option>
+						{/each}
 					</datalist>
-					<br />
-					<label for="iso">ISO:</label>
-					<input type="text" id="iso" bind:value={roll.iso} placeholder="400" />
 				</fieldset>
 				<fieldset>
 					<legend>Custom</legend>
