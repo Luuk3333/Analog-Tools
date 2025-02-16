@@ -155,7 +155,10 @@
 			el.download = `rolls-${Math.floor(new Date().getTime() / 1000)}.json`;
 			document.body.appendChild(el);
 			el.click();
-			URL.revokeObjectURL(fileURL);
+			document.body.removeChild(a);
+			setTimeout(function () {
+				URL.revokeObjectURL(fileURL);
+			}, 1500);
 		}}>Export to JSON file</button>
 {/if}
 
