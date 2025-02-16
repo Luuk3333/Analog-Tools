@@ -280,7 +280,7 @@
 			el.download = `rolls-${Math.floor(new Date().getTime() / 1000)}.json`;
 			document.body.appendChild(el);
 			el.click();
-			document.body.removeChild(a);
+			document.body.removeChild(el);
 			setTimeout(function () {
 				URL.revokeObjectURL(fileURL);
 			}, 1500);
