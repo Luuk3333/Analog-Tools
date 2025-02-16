@@ -84,6 +84,22 @@
 	{/each}
 </ul>
 
+{#if rolls.current.length > 0}
+	<button
+		onclick={() => {
+			var blob = new Blob([JSON.stringify(rolls.current, null, 2)], {
+				type: "application/json",
+			});
+			const fileURL = URL.createObjectURL(blob);
+			const el = document.createElement("a");
+			el.href = fileURL;
+			el.download = `rolls-${Math.floor(new Date().getTime() / 1000)}.json`;
+			document.body.appendChild(el);
+			el.click();
+			URL.revokeObjectURL(fileURL);
+		}}>Export to JSON file</button>
+{/if}
+
 <hr />
 
 <pre>{JSON.stringify(rolls.current, null, 2)}</pre>
