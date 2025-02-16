@@ -1,6 +1,12 @@
 <svelte:head>
-	<title>SvelteKit Template</title>
+	<title>Analog Tools</title>
 </svelte:head>
 
-<h1>SvelteKit Template</h1>
-<p>This template includes Svelte 5 and SCSS.</p>
+<h1>Analog Tools</h1>
+<p>Some tools for Analog Photography.</p>
+
+<ul>
+	<li>
+		<a href="/rolls">Rolls</a>
+	</li>
+</ul>
