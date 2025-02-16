@@ -10,20 +10,6 @@
 
 	const rolls = new LocalStorage("rolls", []);
 
-	function addRoll(event) {
-		event.preventDefault();
-		const data = {
-			id: self.crypto.randomUUID(),
-			shots: [],
-			product: "",
-			identifier: "",
-			notes: "",
-			added_on: new Date().getTime(),
-		};
-		console.log(data);
-		rolls.current = [data, ...rolls.current];
-	}
-
 	let GPSTestMessage = "";
 	function getLocation() {
 		GPSTestMessage = "⏳ Loading...";
@@ -107,7 +93,18 @@
 
 <hr />
 <h2>Your rolls</h2>
-<button onclick={addRoll}>Add roll</button>
+<button
+	onclick={() => {
+		const data = {
+			id: self.crypto.randomUUID(),
+			shots: [],
+			product: "",
+			identifier: "",
+			notes: "",
+			added_on: new Date().getTime(),
+		};
+		rolls.current = [data, ...rolls.current];
+	}}>Add roll</button>
 <ul>
 	{#each rolls.current as roll}
 		<li>
