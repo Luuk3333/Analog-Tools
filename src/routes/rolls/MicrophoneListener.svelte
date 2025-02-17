@@ -1,7 +1,7 @@
 <script>
 	import { onDestroy } from "svelte";
 
-	let { enableMicrophone, setMessage, callback } = $props();
+	let { enableMicrophone, setMessage, oneShot = false, callback } = $props();
 
 	let rec = null;
 
@@ -86,7 +86,8 @@
 		rec = new Recording(function (data) {
 			if (detectClap(data)) {
 				setMessage("✅ Shutter detected!");
-				callback(data);
+				if (oneShot) enableMicrophone = false;
+				callback(data, enableMicrophone);
 				setTimeout(() => {
 					setMessage("🎙️ Listening...");
 				}, 1500);
@@ -100,7 +101,12 @@
 			setMessage("🎙️ Listening...");
 		} else if (rec) {
 			rec.stop();
-			setMessage('<span class="diagonal-strike">🎙️</span> Microphone not active.');
+			setTimeout(
+				() => {
+					setMessage('<span class="diagonal-strike">🎙️</span> Microphone not active.');
+				},
+				oneShot ? 1500 : 0,
+			);
 		}
 	});
 

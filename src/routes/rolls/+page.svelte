@@ -12,6 +12,7 @@
 	const preferences = new LocalStorage("preferences", {
 		addGPSToNewShots: true,
 		enableMicrophone: false,
+		microphoneOneShot: true,
 	});
 
 	const rolls = new LocalStorage("rolls", []);
@@ -89,7 +90,7 @@
 	function updateMessage(newMessage) {
 		microphoneMessage = newMessage;
 	}
-	function handleShutterSoundDetected() {
+	function handleShutterSoundDetected(data, enableMicrophone) {
 		if (rolls.current.length === 0) addRoll();
 		setTimeout(() => {
 			document
@@ -98,6 +99,7 @@
 				.querySelector("button#addShot")
 				.click();
 		}, 0);
+		preferences.current.enableMicrophone = enableMicrophone;
 	}
 </script>
 
@@ -177,11 +179,18 @@
 	<legend>Microphone</legend>
 	<input type="checkbox" id="microphone" bind:checked={preferences.current.enableMicrophone} />
 	<label for="microphone">Enable microphone to listen for shutter sound</label>
+	<br />
+	<input
+		type="checkbox"
+		id="microphoneOneShot"
+		bind:checked={preferences.current.microphoneOneShot} />
+	<label for="microphoneOneShot">Turn off after detection</label>
 	<p>{@html microphoneMessage}</p>
 </fieldset>
 <MicrophoneListener
 	enableMicrophone={preferences.current.enableMicrophone}
 	setMessage={updateMessage}
+	oneShot={preferences.current.microphoneOneShot}
 	callback={handleShutterSoundDetected} />
 
 <hr />
