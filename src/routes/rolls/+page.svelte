@@ -30,6 +30,7 @@
 	}
 
 	function addShot(roll) {
+		const dt = new Date();
 		const uuid = self.crypto.randomUUID();
 		const obj = {
 			id: uuid,
@@ -38,7 +39,10 @@
 			shutterSpeed: currentCameraSettings.current.shutterSpeed,
 			position: null,
 			frameNumber: roll.shots.length + 1,
-			added_on: new Date().getTime(),
+			date: dt.toLocaleString("sv-SE").slice(0, 10),
+			time: dt.toLocaleString("sv-SE").slice(11, 19),
+			timezone_offset: dt.getTimezoneOffset(),
+			added_on: dt.getTime(),
 		};
 		roll.shots = [obj, ...roll.shots];
 		return uuid;
@@ -266,6 +270,12 @@
 							list="shutterSpeeds"
 							bind:value={shot.shutterSpeed}
 							placeholder="1/250" />
+
+						<br />
+						<label for="shot-timestamp">Taken on:</label>
+						<input type="date" id="shot-date" bind:value={shot.date} />
+						<input type="time" id="shot-time" step="1" bind:value={shot.time} />
+						(local)
 
 						<pre>{JSON.stringify(shot, null, 2)}</pre>
 						<button
