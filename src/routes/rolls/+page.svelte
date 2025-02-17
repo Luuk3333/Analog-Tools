@@ -112,6 +112,10 @@
 	<title>Rolls - Analog Tools</title>
 </svelte:head>
 
+<a href="/">Home</a>
+
+<hr />
+
 <h1>Rolls</h1>
 <p>Keep track of your film rolls.</p>
 
