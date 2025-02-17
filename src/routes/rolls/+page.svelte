@@ -201,12 +201,26 @@
 <hr />
 <h2>Your rolls</h2>
 <button onclick={addRoll}>Add roll</button>
-<ul id="rolls">
+<div class="rolls">
 	{#each rolls.current as roll, index}
-		<li>
-			{roll.identifier || roll.product || `Roll #${rolls.current.length - index}`}
+		<div class="roll" style:backgroundImage={`url(${products[roll.product]?.image})`}>
+			<span class="film-label">
+				{#if products[roll.product]?.image}
+					<img src={products[roll.product].image} />
+				{/if}
+			</span>
+
+			<h1>
+				{roll.identifier || roll.product || `Roll #${rolls.current.length - index}`}
+			</h1>
 			{#if roll.identifier}
-				&ndash; {roll.product}
+				<h2>{roll.product}</h2>
+			{/if}
+
+			{#if roll.notes}
+				<p style="white-space: pre-line;">
+					{roll.notes.trim()}
+				</p>
 			{/if}
 
 			<br />
@@ -223,7 +237,7 @@
 						list="products"
 						placeholder="Kodak Portra 400" />
 					<datalist id="products">
-						{#each products.sort() as value}
+						{#each Object.keys(products).sort() as value}
 							<option {value}></option>
 						{/each}
 					</datalist>
@@ -252,128 +266,130 @@
 					}
 				}}>Remove</button>
 
-			<button
-				id="addShot"
-				onclick={() => {
-					const uuid = addShot(roll);
-
-					if (preferences.current.addGPSToNewShots) {
-						const index = roll.shots.findIndex((r) => r.id === uuid);
-						roll.shots[index].position = "loading";
-						setTimeout(() => {
-							if (roll.shots[index].position === "loading") {
-								roll.shots[index].position = null;
-							}
-						}, 30 * 1000);
-						getLocation((error, position) => {
-							if (error) {
-								console.error(
-									"Failed to add GPS coordinates to new shot:",
-									error.message,
-								);
-								roll.shots[index].position = null;
-							} else {
-								roll.shots[index].position = position;
-							}
-						});
-					}
-				}}>Add shot</button>
-
 			<br />
 
-			<div class="shots">
-				{#each roll.shots as shot}
-					<details>
-						<summary class="square">
-							<span class="icon">🖼️</span>
-							<span class="info top left frameNumber">#{shot.frameNumber}</span>
-							<span class="info top right">
-								{#if shot.position === "loading"}
-									<span class="blink">📍</span>
-								{:else if shot.position}
-									📍
-								{/if}
-							</span>
-							<div class="info bottom left datetime">
-								{#if shot.time}
-									<span>{shot.time.substring(0, 5)}</span>
-								{/if}
-								{#if shot.date}
-									<span
-										>{new Date(shot.date).toLocaleDateString("en-GB", {
-											day: "2-digit",
-											month: "short",
-										})}</span>
-									<span>{shot.date.substring(0, 4)}</span>
-								{/if}
-							</div>
-							<div class="info bottom right cameraSettings">
-								<span>{shot.iso}</span>
-								<span>{shot.aperture}</span>
-								{#if shot.shutterSpeed}
-									<span
-										>{shot.shutterSpeed}{#if !shot.shutterSpeed.startsWith("1/")}&nbsp;s{/if}</span>
-								{/if}
-							</div>
-						</summary>
-						<label for="frameNumber">Frame number:</label>
-						#<input
-							type="number"
-							id="frameNumber"
-							bind:value={shot.frameNumber}
-							style="width: 5rem;"
-							placeholder="36" />
-						<br />
-						<label for="shot-iso">ISO:</label>
-						<input
-							type="number"
-							id="shot-iso"
-							list="isos"
-							bind:value={shot.iso}
-							placeholder="400" />
-						<br />
-						<label for="shot-aperture">Aperture:</label>
-						<input
-							type="text"
-							id="shot-aperture"
-							list="apertures"
-							bind:value={shot.aperture}
-							placeholder="f/8" />
-						<br />
-						<label for="shot-shutterSpeed">Shutter speed:</label>
-						<input
-							type="text"
-							id="shot-shutterSpeed"
-							list="shutterSpeeds"
-							bind:value={shot.shutterSpeed}
-							placeholder="1/250" />
+			<details>
+				<summary>Shots</summary>
+				<button
+					id="addShot"
+					onclick={() => {
+						const uuid = addShot(roll);
 
-						<br />
-						<label for="shot-timestamp">Taken on:</label>
-						<input type="date" id="shot-date" bind:value={shot.date} />
-						<input type="time" id="shot-time" step="1" bind:value={shot.time} />
-						(local)
-
-						<br />
-
-						<button
-							onclick={() => {
-								const index = roll.shots.findIndex((r) => r.id === shot.id);
-								if (index !== -1) {
-									roll.shots.splice(index, 1);
+						if (preferences.current.addGPSToNewShots) {
+							const index = roll.shots.findIndex((r) => r.id === uuid);
+							roll.shots[index].position = "loading";
+							setTimeout(() => {
+								if (roll.shots[index].position === "loading") {
+									roll.shots[index].position = null;
 								}
-							}}>Remove</button>
-
+							}, 30 * 1000);
+							getLocation((error, position) => {
+								if (error) {
+									console.error(
+										"Failed to add GPS coordinates to new shot:",
+										error.message,
+									);
+									roll.shots[index].position = null;
+								} else {
+									roll.shots[index].position = position;
+								}
+							});
+						}
+					}}>Add shot</button>
+				<div class="shots">
+					{#each roll.shots as shot}
 						<details>
-							<summary>Show JSON</summary>
-							<pre>{JSON.stringify(shot, null, 2)}</pre>
+							<summary class="square">
+								<span class="icon">🖼️</span>
+								<span class="info top left frameNumber">#{shot.frameNumber}</span>
+								<span class="info top right">
+									{#if shot.position === "loading"}
+										<span class="blink">📍</span>
+									{:else if shot.position}
+										📍
+									{/if}
+								</span>
+								<div class="info bottom left datetime">
+									{#if shot.time}
+										<span>{shot.time.substring(0, 5)}</span>
+									{/if}
+									{#if shot.date}
+										<span
+											>{new Date(shot.date).toLocaleDateString("en-GB", {
+												day: "2-digit",
+												month: "short",
+											})}</span>
+										<span>{shot.date.substring(0, 4)}</span>
+									{/if}
+								</div>
+								<div class="info bottom right cameraSettings">
+									<span>{shot.iso}</span>
+									<span>{shot.aperture}</span>
+									{#if shot.shutterSpeed}
+										<span
+											>{shot.shutterSpeed}{#if !shot.shutterSpeed.startsWith("1/")}&nbsp;s{/if}</span>
+									{/if}
+								</div>
+							</summary>
+							<label for="frameNumber">Frame number:</label>
+							#<input
+								type="number"
+								id="frameNumber"
+								bind:value={shot.frameNumber}
+								style="width: 5rem;"
+								placeholder="36" />
+							<br />
+							<label for="shot-iso">ISO:</label>
+							<input
+								type="number"
+								id="shot-iso"
+								list="isos"
+								bind:value={shot.iso}
+								placeholder="400" />
+							<br />
+							<label for="shot-aperture">Aperture:</label>
+							<input
+								type="text"
+								id="shot-aperture"
+								list="apertures"
+								bind:value={shot.aperture}
+								placeholder="f/8" />
+							<br />
+							<label for="shot-shutterSpeed">Shutter speed:</label>
+							<input
+								type="text"
+								id="shot-shutterSpeed"
+								list="shutterSpeeds"
+								bind:value={shot.shutterSpeed}
+								placeholder="1/250" />
+
+							<br />
+							<label for="shot-timestamp">Taken on:</label>
+							<input type="date" id="shot-date" bind:value={shot.date} />
+							<input type="time" id="shot-time" step="1" bind:value={shot.time} />
+							(local)
+
+							<br />
+
+							<button
+								onclick={() => {
+									const index = roll.shots.findIndex((r) => r.id === shot.id);
+									if (index !== -1) {
+										roll.shots.splice(index, 1);
+									}
+								}}>Remove</button>
+
+							<details>
+								<summary>Show JSON</summary>
+								<pre>{JSON.stringify(shot, null, 2)}</pre>
+							</details>
 						</details>
-					</details>
-				{/each}
-			</div>
-		</li>
+					{/each}
+				</div>
+			</details>
+		</div>
 	{/each}
-</ul>
+</div>
 
 {#if rolls.current.length === 0}
 	or
@@ -431,8 +447,9 @@
 	fieldset {
 		width: max-content;
 	}
-	li {
-		margin-top: 1rem;
+
+	details summary {
+		cursor: pointer;
 	}
 
 	:global(.diagonal-strike) {
@@ -450,6 +467,36 @@
 		}
 	}
 
+	.rolls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+
+		.roll {
+			flex: 1;
+			border: 2px solid red;
+			border-radius: 1rem;
+			padding: 1rem;
+			min-width: 18rem;
+			max-width: 30rem;
+
+			.film-label img {
+				height: 4.5rem;
+			}
+
+			h1,
+			h2 {
+				margin: 0;
+			}
+			h1 {
+				font-size: 1.5rem;
+			}
+			h2 {
+				font-size: 1.2rem;
+			}
+		}
+	}
+
 	.shots {
 		display: flex;
 		flex-wrap: wrap;
@@ -462,7 +509,6 @@
 		height: $size;
 		background-color: lightgray;
 		border-radius: 1rem;
-		cursor: pointer;
 
 		.icon {
 			position: absolute;

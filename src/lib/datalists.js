@@ -21,9 +21,17 @@ export const shutterSpeed = [
 	"1/4000",
 ];
 
-export const products = [
-	"Ilford Delta 3200",
-	"Kodak Portra 160",
-	"Kodak Portra 400",
-	"Kodak Portra 800",
-];
+export const products = {
+	"Ilford Delta 3200": {
+		image: "/film-labels/ILFORD-Delta-3200.jpg",
+	},
+	"Kodak Portra 160": {
+		image: "/film-labels/Portra-160-120-300x300.jpg",
+	},
+	"Kodak Portra 400": {
+		image: "/film-labels/Portra-400-120-300x300.jpg",
+	},
+	"Kodak Portra 800": {
+		image: "/film-labels/Portra-800-35mm-300x300.jpg",
+	},
+};
