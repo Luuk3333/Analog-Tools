@@ -211,6 +211,47 @@
 
 			<br />
 
+			{#if roll.editing}
+				<button onclick={() => (roll.editing = false)}>Finish editing</button>
+				<fieldset>
+					<legend>Roll</legend>
+					<label for="product">Product:</label>
+					<input
+						type="text"
+						id="product"
+						bind:value={roll.product}
+						list="products"
+						placeholder="Kodak Portra 400" />
+					<datalist id="products">
+						{#each products.sort() as value}
+							<option {value}></option>
+						{/each}
+					</datalist>
+				</fieldset>
+				<fieldset>
+					<legend>Custom</legend>
+					<label for="identifier">Identifier:</label>
+					<input
+						type="text"
+						id="identifier"
+						bind:value={roll.identifier}
+						placeholder="251A" />
+					<br />
+					<label for="notes">Notes:</label>
+					<textarea id="notes" bind:value={roll.notes}></textarea>
+				</fieldset>
+				<br />
+			{:else}
+				<button onclick={() => (roll.editing = true)}>Edit</button>
+			{/if}
+			<button
+				onclick={() => {
+					const index = rolls.current.findIndex((r) => r.id === roll.id);
+					if (index !== -1) {
+						rolls.current.splice(index, 1);
+					}
+				}}>Remove</button>
+
 			<button
 				id="addShot"
 				onclick={() => {
@@ -302,7 +343,8 @@
 						<input type="time" id="shot-time" step="1" bind:value={shot.time} />
 						(local)
 
-						<pre>{JSON.stringify(shot, null, 2)}</pre>
+						<br />
+
 						<button
 							onclick={() => {
 								const index = roll.shots.findIndex((r) => r.id === shot.id);
@@ -310,50 +352,14 @@
 									roll.shots.splice(index, 1);
 								}
 							}}>Remove</button>
+
+						<details>
+							<summary>Show JSON</summary>
+							<pre>{JSON.stringify(shot, null, 2)}</pre>
+						</details>
 					</details>
 				{/each}
 			</div>
-
-			{#if roll.editing}
-				<button onclick={() => (roll.editing = false)}>Finish editing</button>
-				<fieldset>
-					<legend>Roll</legend>
-					<label for="product">Product:</label>
-					<input
-						type="text"
-						id="product"
-						bind:value={roll.product}
-						list="products"
-						placeholder="Kodak Portra 400" />
-					<datalist id="products">
-						{#each products.sort() as value}
-							<option {value}></option>
-						{/each}
-					</datalist>
-				</fieldset>
-				<fieldset>
-					<legend>Custom</legend>
-					<label for="identifier">Identifier:</label>
-					<input
-						type="text"
-						id="identifier"
-						bind:value={roll.identifier}
-						placeholder="251A" />
-					<br />
-					<label for="notes">Notes:</label>
-					<textarea id="notes" bind:value={roll.notes}></textarea>
-				</fieldset>
-				<br />
-			{:else}
-				<button onclick={() => (roll.editing = true)}>Edit</button>
-			{/if}
-			<button
-				onclick={() => {
-					const index = rolls.current.findIndex((r) => r.id === roll.id);
-					if (index !== -1) {
-						rolls.current.splice(index, 1);
-					}
-				}}>Remove</button>
 		</li>
 	{/each}
 </ul>
