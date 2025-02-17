@@ -274,33 +274,33 @@
 
 			<details>
 				<summary>Shots</summary>
-				<button
-					id="addShot"
-					onclick={() => {
-						const uuid = addShot(roll);
-
-						if (preferences.current.addGPSToNewShots) {
-							const index = roll.shots.findIndex((r) => r.id === uuid);
-							roll.shots[index].position = "loading";
-							setTimeout(() => {
-								if (roll.shots[index].position === "loading") {
-									roll.shots[index].position = null;
-								}
-							}, 30 * 1000);
-							getLocation((error, position) => {
-								if (error) {
-									console.error(
-										"Failed to add GPS coordinates to new shot:",
-										error.message,
-									);
-									roll.shots[index].position = null;
-								} else {
-									roll.shots[index].position = position;
-								}
-							});
-						}
-					}}>Add shot</button>
 				<div class="shots">
+					<button
+						id="addShot"
+						onclick={() => {
+							const uuid = addShot(roll);
+
+							if (preferences.current.addGPSToNewShots) {
+								const index = roll.shots.findIndex((r) => r.id === uuid);
+								roll.shots[index].position = "loading";
+								setTimeout(() => {
+									if (roll.shots[index].position === "loading") {
+										roll.shots[index].position = null;
+									}
+								}, 30 * 1000);
+								getLocation((error, position) => {
+									if (error) {
+										console.error(
+											"Failed to add GPS coordinates to new shot:",
+											error.message,
+										);
+										roll.shots[index].position = null;
+									} else {
+										roll.shots[index].position = position;
+									}
+								});
+							}
+						}}>➕<br />Add shot</button>
 					{#each roll.shots as shot}
 						<details>
 							<summary class="square">
@@ -505,54 +505,64 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem;
-	}
-	.shots .square {
-		$size: 7rem;
-		position: relative;
-		width: $size;
-		height: $size;
-		background-color: lightgray;
-		border-radius: 1rem;
 
-		.icon {
-			position: absolute;
-			font-size: 3rem;
-			width: 100%;
-			height: 60%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			filter: grayscale(1);
-			opacity: 0.25;
+		.square,
+		button#addShot {
+			$shot-size: 7rem;
+			width: $shot-size;
+			height: $shot-size;
+			background-color: lightgray;
+			border-radius: 1rem;
 		}
 
-		.info {
-			position: absolute;
-			padding: 0.5rem;
-			&.top {
-				top: 0;
-			}
-			&.left {
-				left: 0;
-			}
-			&.right {
-				right: 0;
-			}
-			&.bottom {
-				bottom: 0;
+		button#addShot {
+			border: 0;
+			cursor: pointer;
+		}
+
+		.square {
+			position: relative;
+
+			.icon {
+				position: absolute;
+				font-size: 3rem;
+				width: 100%;
+				height: 60%;
 				display: flex;
-				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				filter: grayscale(1);
+				opacity: 0.25;
+			}
+
+			.info {
+				position: absolute;
+				padding: 0.5rem;
+				&.top {
+					top: 0;
+				}
 				&.left {
-					align-items: flex-start;
+					left: 0;
 				}
 				&.right {
-					align-items: flex-end;
+					right: 0;
+				}
+				&.bottom {
+					bottom: 0;
+					display: flex;
+					flex-direction: column;
+					&.left {
+						align-items: flex-start;
+					}
+					&.right {
+						align-items: flex-end;
+					}
 				}
 			}
-		}
 
-		.frameNumber {
-			font-size: 1.7rem;
+			.frameNumber {
+				font-size: 1.7rem;
+			}
 		}
 	}
 
