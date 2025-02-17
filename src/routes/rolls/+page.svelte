@@ -370,7 +370,10 @@
 
 <hr />
 
-<pre>{JSON.stringify(rolls.current, null, 2)}</pre>
+<details>
+	<summary>Show JSON</summary>
+	<pre>{JSON.stringify(rolls.current, null, 2)}</pre>
+</details>
 
 <style lang="scss">
 	fieldset {
