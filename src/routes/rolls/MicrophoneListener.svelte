@@ -4,6 +4,7 @@
 	let { enableMicrophone, setMessage, oneShot = false, callback } = $props();
 
 	let rec = null;
+	let detected = $state(false);
 
 	function startRecording() {
 		if (rec) return; // Prevent multiple initializations
@@ -85,10 +86,12 @@
 
 		rec = new Recording(function (data) {
 			if (detectClap(data)) {
+				detected = true;
 				setMessage("✅ Shutter detected!");
 				if (oneShot) enableMicrophone = false;
 				callback(data, enableMicrophone);
 				setTimeout(() => {
+					detected = false;
 					setMessage("🎙️ Listening...");
 				}, 1500);
 			}
@@ -105,7 +108,7 @@
 				() => {
 					setMessage('<span class="diagonal-strike">🎙️</span> Microphone not active.');
 				},
-				oneShot ? 1500 : 0,
+				detected ? 1500 : 0,
 			);
 		}
 	});
