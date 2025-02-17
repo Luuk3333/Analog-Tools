@@ -236,9 +236,34 @@
 			{#if roll.shots.length > 0}
 				Shots:<br />
 			{/if}
-			<ul>
+			<div class="shots">
 				{#each roll.shots as shot}
-					<li>
+					<details>
+						<summary class="square">
+							<span class="icon">🖼️</span>
+							<span class="frameNumber">#{shot.frameNumber}</span>
+							<div class="datetime">
+								{#if shot.time}
+									<span>{shot.time.substring(0, 5)}</span>
+								{/if}
+								{#if shot.date}
+									<span
+										>{new Date(shot.date).toLocaleDateString("en-GB", {
+											day: "2-digit",
+											month: "short",
+										})}</span>
+									<span>{shot.date.substring(0, 4)}</span>
+								{/if}
+							</div>
+							<div class="cameraSettings">
+								<span>{shot.iso}</span>
+								<span>{shot.aperture}</span>
+								{#if shot.shutterSpeed}
+									<span
+										>{shot.shutterSpeed}{#if !shot.shutterSpeed.startsWith("1/")}&nbsp;s{/if}</span>
+								{/if}
+							</div>
+						</summary>
 						<label for="frameNumber">Frame number:</label>
 						#<input
 							type="number"
@@ -285,9 +310,9 @@
 									roll.shots.splice(index, 1);
 								}
 							}}>Remove</button>
-					</li>
+					</details>
 				{/each}
-			</ul>
+			</div>
 
 			{#if roll.editing}
 				<button onclick={() => (roll.editing = false)}>Finish editing</button>
@@ -405,6 +430,61 @@
 			background-color: red;
 			transform-origin: bottom left;
 			transform: rotate(-45deg);
+		}
+	}
+
+	.shots {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+	.shots .square {
+		$size: 7rem;
+		position: relative;
+		width: $size;
+		height: $size;
+		background-color: lightgray;
+		border-radius: 1rem;
+		cursor: pointer;
+
+		.icon {
+			position: absolute;
+			font-size: 3rem;
+			width: 100%;
+			height: 60%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			filter: grayscale(1);
+			opacity: 0.25;
+		}
+
+		.frameNumber {
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding: 0.5rem;
+			font-size: 1.7rem;
+		}
+
+		.datetime {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			padding: 0.5rem;
+		}
+
+		.cameraSettings {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			padding: 0.5rem;
 		}
 	}
 </style>
