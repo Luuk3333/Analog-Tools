@@ -1,3 +1,7 @@
+<script>
+	import { buildNumber } from "$lib/buildNumber.js";
+</script>
+
 <svelte:head>
 	<title>Analog Tools</title>
 </svelte:head>
@@ -10,3 +14,7 @@
 		<a href="/rolls">Rolls</a>
 	</li>
 </ul>
+
+<hr />
+
+<p>build {buildNumber}</p>
