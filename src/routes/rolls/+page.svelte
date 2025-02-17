@@ -1,6 +1,7 @@
 <script>
 	import { LocalStorage } from "$lib/storage.svelte";
 	import { iso, aperture, shutterSpeed, products } from "$lib/datalists.js";
+	import MicrophoneListener from "./MicrophoneListener.svelte";
 
 	const currentCameraSettings = new LocalStorage("currentCameraSettings", {
 		iso: "",
@@ -10,10 +11,38 @@
 
 	const preferences = new LocalStorage("preferences", {
 		addGPSToNewShots: true,
+		enableMicrophone: false,
 	});
 
 	const rolls = new LocalStorage("rolls", []);
 
+	function addRoll() {
+		const data = {
+			id: self.crypto.randomUUID(),
+			shots: [],
+			product: "",
+			identifier: "",
+			notes: "",
+			added_on: new Date().getTime(),
+		};
+		rolls.current = [data, ...rolls.current];
+	}
+
+	function addShot(roll) {
+		const uuid = self.crypto.randomUUID();
+		const obj = {
+			id: uuid,
+			iso: currentCameraSettings.current.iso,
+			aperture: currentCameraSettings.current.aperture,
+			shutterSpeed: currentCameraSettings.current.shutterSpeed,
+			position: null,
+			added_on: new Date().getTime(),
+		};
+		roll.shots = [...roll.shots, obj];
+		return uuid;
+	}
+
+	// GPS
 	let GPSTestMessage = "";
 	function testLocation() {
 		GPSTestMessage = "⏳ Loading...";
@@ -51,6 +80,24 @@
 		} else {
 			callback(new Error("Geolocation not supported"), null, null);
 		}
+	}
+
+	// Microphone
+	let microphoneMessage = $state(
+		'<span class="diagonal-strike">🎙️</span> Microphone not active.',
+	);
+	function updateMessage(newMessage) {
+		microphoneMessage = newMessage;
+	}
+	function handleShutterSoundDetected() {
+		if (rolls.current.length === 0) addRoll();
+		setTimeout(() => {
+			document
+				.getElementById("rolls")
+				.querySelector("li:first-child")
+				.querySelector("button#addShot")
+				.click();
+		}, 0);
 	}
 </script>
 
@@ -126,21 +173,21 @@
 	<label for="prefAddGPSToNewShots">Add current GPS position to new shots</label>
 </fieldset>
 
+<fieldset>
+	<legend>Microphone</legend>
+	<input type="checkbox" id="microphone" bind:checked={preferences.current.enableMicrophone} />
+	<label for="microphone">Enable microphone to listen for shutter sound</label>
+	<p>{@html microphoneMessage}</p>
+</fieldset>
+<MicrophoneListener
+	enableMicrophone={preferences.current.enableMicrophone}
+	setMessage={updateMessage}
+	callback={handleShutterSoundDetected} />
+
 <hr />
 <h2>Your rolls</h2>
-<button
-	onclick={() => {
-		const data = {
-			id: self.crypto.randomUUID(),
-			shots: [],
-			product: "",
-			identifier: "",
-			notes: "",
-			added_on: new Date().getTime(),
-		};
-		rolls.current = [data, ...rolls.current];
-	}}>Add roll</button>
-<ul>
+<button onclick={addRoll}>Add roll</button>
+<ul id="rolls">
 	{#each rolls.current as roll, index}
 		<li>
 			{roll.identifier || roll.product || `Roll #${rolls.current.length - index}`}
@@ -151,17 +198,9 @@
 			<br />
 
 			<button
+				id="addShot"
 				onclick={() => {
-					const uuid = self.crypto.randomUUID();
-					const obj = {
-						id: uuid,
-						iso: currentCameraSettings.current.iso,
-						aperture: currentCameraSettings.current.aperture,
-						shutterSpeed: currentCameraSettings.current.shutterSpeed,
-						position: null,
-						added_on: new Date().getTime(),
-					};
-					roll.shots = [...roll.shots, obj];
+					const uuid = addShot(roll);
 
 					if (preferences.current.addGPSToNewShots) {
 						getLocation((error, position) => {
@@ -297,5 +336,20 @@
 	}
 	li {
 		margin-top: 1rem;
+	}
+
+	:global(.diagonal-strike) {
+		position: relative;
+		&::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 0.25rem;
+			width: 100%;
+			height: 0.15rem;
+			background-color: red;
+			transform-origin: bottom left;
+			transform: rotate(-45deg);
+		}
 	}
 </style>
