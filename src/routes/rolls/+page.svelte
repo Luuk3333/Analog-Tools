@@ -234,6 +234,30 @@
 			<ul>
 				{#each roll.shots as shot}
 					<li>
+						<label for="shot-iso">ISO:</label>
+						<input
+							type="text"
+							id="shot-iso"
+							list="isos"
+							bind:value={shot.iso}
+							placeholder="400" />
+						<br />
+						<label for="shot-aperture">Aperture:</label>
+						<input
+							type="text"
+							id="shot-aperture"
+							list="apertures"
+							bind:value={shot.aperture}
+							placeholder="f/8" />
+						<br />
+						<label for="shot-shutterSpeed">Shutter speed:</label>
+						<input
+							type="text"
+							id="shot-shutterSpeed"
+							list="shutterSpeeds"
+							bind:value={shot.shutterSpeed}
+							placeholder="1/250" />
+
 						<pre>{JSON.stringify(shot, null, 2)}</pre>
 						<button
 							onclick={() => {
