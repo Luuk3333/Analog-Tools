@@ -286,15 +286,15 @@
 					<details>
 						<summary class="square">
 							<span class="icon">🖼️</span>
-							<span class="frameNumber">#{shot.frameNumber}</span>
-							<span class="gps">
+							<span class="info top left frameNumber">#{shot.frameNumber}</span>
+							<span class="info top right">
 								{#if shot.position === "loading"}
 									<span class="blink">📍</span>
 								{:else if shot.position}
 									📍
 								{/if}
 							</span>
-							<div class="datetime">
+							<div class="info bottom left datetime">
 								{#if shot.time}
 									<span>{shot.time.substring(0, 5)}</span>
 								{/if}
@@ -307,7 +307,7 @@
 									<span>{shot.date.substring(0, 4)}</span>
 								{/if}
 							</div>
-							<div class="cameraSettings">
+							<div class="info bottom right cameraSettings">
 								<span>{shot.iso}</span>
 								<span>{shot.aperture}</span>
 								{#if shot.shutterSpeed}
@@ -476,39 +476,33 @@
 			opacity: 0.25;
 		}
 
+		.info {
+			position: absolute;
+			padding: 0.5rem;
+			&.top {
+				top: 0;
+			}
+			&.left {
+				left: 0;
+			}
+			&.right {
+				right: 0;
+			}
+			&.bottom {
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				&.left {
+					align-items: flex-start;
+				}
+				&.right {
+					align-items: flex-end;
+				}
+			}
+		}
+
 		.frameNumber {
-			position: absolute;
-			top: 0;
-			left: 0;
-			padding: 0.5rem;
 			font-size: 1.7rem;
-		}
-
-		.gps {
-			position: absolute;
-			top: 0;
-			right: 0;
-			padding: 0.5rem;
-		}
-
-		.datetime {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			padding: 0.5rem;
-		}
-
-		.cameraSettings {
-			position: absolute;
-			bottom: 0;
-			right: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-			padding: 0.5rem;
 		}
 	}
 
