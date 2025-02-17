@@ -5,6 +5,7 @@
 
 	let rec = null;
 	let detected = $state(false);
+	const messageDuration = 1500;
 
 	function startRecording() {
 		if (rec) return; // Prevent multiple initializations
@@ -93,7 +94,7 @@
 				setTimeout(() => {
 					detected = false;
 					setMessage("🎙️ Listening...");
-				}, 1500);
+				}, messageDuration);
 			}
 		});
 	}
@@ -108,7 +109,7 @@
 				() => {
 					setMessage('<span class="diagonal-strike">🎙️</span> Microphone not active.');
 				},
-				detected ? 1500 : 0,
+				detected ? messageDuration : 0,
 			);
 		}
 	});
