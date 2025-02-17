@@ -37,9 +37,10 @@
 			aperture: currentCameraSettings.current.aperture,
 			shutterSpeed: currentCameraSettings.current.shutterSpeed,
 			position: null,
+			frameNumber: roll.shots.length + 1,
 			added_on: new Date().getTime(),
 		};
-		roll.shots = [...roll.shots, obj];
+		roll.shots = [obj, ...roll.shots];
 		return uuid;
 	}
 
@@ -234,6 +235,14 @@
 			<ul>
 				{#each roll.shots as shot}
 					<li>
+						<label for="frameNumber">Frame number:</label>
+						#<input
+							type="number"
+							id="frameNumber"
+							bind:value={shot.frameNumber}
+							style="width: 5rem;"
+							placeholder="36" />
+						<br />
 						<label for="shot-iso">ISO:</label>
 						<input
 							type="text"
