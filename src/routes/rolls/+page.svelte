@@ -43,7 +43,7 @@
 	}
 
 	// GPS
-	let GPSTestMessage = "";
+	let GPSTestMessage = $state("");
 	function testLocation() {
 		GPSTestMessage = "⏳ Loading...";
 		if (navigator.geolocation) {
