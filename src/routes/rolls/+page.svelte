@@ -258,14 +258,21 @@
 					const uuid = addShot(roll);
 
 					if (preferences.current.addGPSToNewShots) {
+						const index = roll.shots.findIndex((r) => r.id === uuid);
+						roll.shots[index].position = "loading";
+						setTimeout(() => {
+							if (roll.shots[index].position === "loading") {
+								roll.shots[index].position = null;
+							}
+						}, 30 * 1000);
 						getLocation((error, position) => {
 							if (error) {
 								console.error(
 									"Failed to add GPS coordinates to new shot:",
 									error.message,
 								);
+								roll.shots[index].position = null;
 							} else {
-								const index = roll.shots.findIndex((r) => r.id === uuid);
 								roll.shots[index].position = position;
 							}
 						});
@@ -274,15 +281,19 @@
 
 			<br />
 
-			{#if roll.shots.length > 0}
-				Shots:<br />
-			{/if}
 			<div class="shots">
 				{#each roll.shots as shot}
 					<details>
 						<summary class="square">
 							<span class="icon">🖼️</span>
 							<span class="frameNumber">#{shot.frameNumber}</span>
+							<span class="gps">
+								{#if shot.position === "loading"}
+									<span class="blink">📍</span>
+								{:else if shot.position}
+									📍
+								{/if}
+							</span>
 							<div class="datetime">
 								{#if shot.time}
 									<span>{shot.time.substring(0, 5)}</span>
@@ -473,6 +484,13 @@
 			font-size: 1.7rem;
 		}
 
+		.gps {
+			position: absolute;
+			top: 0;
+			right: 0;
+			padding: 0.5rem;
+		}
+
 		.datetime {
 			position: absolute;
 			bottom: 0;
@@ -491,6 +509,15 @@
 			flex-direction: column;
 			align-items: flex-end;
 			padding: 0.5rem;
+		}
+	}
+
+	.blink {
+		animation: blinker 1s step-start infinite;
+		@keyframes blinker {
+			50% {
+				opacity: 0;
+			}
 		}
 	}
 </style>
