@@ -102,7 +102,7 @@
 </script>
 
 <svelte:head>
-	<title>Timestamp - Analog Tools</title>
+	<title>Rolls - Analog Tools</title>
 </svelte:head>
 
 <h1>Rolls</h1>
