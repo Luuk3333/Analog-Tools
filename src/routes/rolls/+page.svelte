@@ -10,9 +10,9 @@
 	});
 
 	const preferences = new LocalStorage("preferences", {
-		addGPSToNewShots: true,
+		addGPSToNewShots: false,
 		enableMicrophone: false,
-		microphoneOneShot: true,
+		microphoneOneShot: false,
 	});
 
 	const rolls = new LocalStorage("rolls", []);
