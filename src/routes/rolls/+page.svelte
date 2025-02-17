@@ -119,7 +119,7 @@
 	<legend>Current Camera Settings</legend>
 	<label for="current-iso">ISO:</label>
 	<input
-		type="text"
+		type="number"
 		id="current-iso"
 		list="isos"
 		bind:value={currentCameraSettings.current.iso}
@@ -249,7 +249,7 @@
 						<br />
 						<label for="shot-iso">ISO:</label>
 						<input
-							type="text"
+							type="number"
 							id="shot-iso"
 							list="isos"
 							bind:value={shot.iso}
