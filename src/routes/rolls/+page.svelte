@@ -310,9 +310,12 @@
 								<span class="info top left frameNumber">#{shot.frameNumber}</span>
 								<span class="info top right">
 									{#if shot.position}
-										📍
+										<span class="marker"></span>
 									{:else if shot.isAcquiringGPS}
-										<span class="blink">📍</span>
+										<span class="blink">🛰️</span>
+										<span class="marker greyscale"></span>
+									{:else}
+										<span class="marker greyscale"></span>
 									{/if}
 								</span>
 								<div class="info bottom left datetime">
@@ -568,6 +571,16 @@
 		}
 	}
 
+	.marker {
+		display: inline-block;
+		width: 1.2rem;
+		height: 1.2rem;
+		background-image: url("./marker.svg");
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+	}
+
 	.blink {
 		animation: blinker 1s step-start infinite;
 		@keyframes blinker {
@@ -575,5 +588,8 @@
 				opacity: 0;
 			}
 		}
+	}
+	.greyscale {
+		filter: grayscale(1);
 	}
 </style>
