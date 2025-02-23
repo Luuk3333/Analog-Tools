@@ -389,7 +389,19 @@
 								type="text"
 								id="latitude"
 								bind:value={shot.latitude}
-								style="width: 5rem;" />
+								style="width: 5rem;"
+								onpaste={(event) => {
+									const pastedText = event.clipboardData.getData("text");
+									const matches = pastedText.match(
+										/^(\d*(?:\.\d*)?)\,\s*(\d*(?:\.\d*)?)$/,
+									); // https://regex101.com/r/P1lqH9/2
+									if (matches) {
+										shot.latitude = matches[1];
+										shot.longitude = matches[2];
+										return;
+									}
+									shot.latitude = pastedText;
+								}} />
 
 							<label for="longitude">Lon:</label>
 							<input
