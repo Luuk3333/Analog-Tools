@@ -289,7 +289,7 @@
 								setTimeout(() => {
 									// Stop attempting to aquire location after some time
 									setValue(uuid, "isAcquiringGPS", false);
-								}, 8 * 1000);
+								}, 30 * 1000);
 								getLocation((error, position) => {
 									setValue(uuid, "isAcquiringGPS", false);
 									if (error) {
