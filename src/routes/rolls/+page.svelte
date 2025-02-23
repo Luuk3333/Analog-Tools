@@ -412,6 +412,12 @@
 								bind:value={shot.longitude}
 								style="width: 5rem;" />
 
+							<!-- prettier-ignore -->
+							{#if (/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/.test(`${shot.latitude}, ${shot.longitude}`))}
+								<br />
+								<a href="https://www.google.com/maps?q={shot.latitude},{shot.longitude}">{shot.latitude}, {shot.longitude}</a>
+							{/if}
+
 							<br />
 
 							<button
