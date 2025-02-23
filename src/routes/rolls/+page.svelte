@@ -281,22 +281,24 @@
 							const uuid = addShot(roll);
 
 							if (preferences.current.addGPSToNewShots) {
-								const index = roll.shots.findIndex((r) => r.id === uuid);
-								roll.shots[index].position = "loading";
+								function setValue(id, key, value) {
+									const index = roll.shots.findIndex((r) => r.id === id);
+									roll.shots[index][key] = value;
+								}
+								setValue(uuid, "isAcquiringGPS", true);
 								setTimeout(() => {
-									if (roll.shots[index].position === "loading") {
-										roll.shots[index].position = null;
-									}
-								}, 30 * 1000);
+									// Stop attempting to aquire location after some time
+									setValue(uuid, "isAcquiringGPS", false);
+								}, 8 * 1000);
 								getLocation((error, position) => {
+									setValue(uuid, "isAcquiringGPS", false);
 									if (error) {
 										console.error(
 											"Failed to add GPS coordinates to new shot:",
 											error.message,
 										);
-										roll.shots[index].position = null;
 									} else {
-										roll.shots[index].position = position;
+										setValue(uuid, "position", position);
 									}
 								});
 							}
@@ -307,10 +309,10 @@
 								<span class="icon">🖼️</span>
 								<span class="info top left frameNumber">#{shot.frameNumber}</span>
 								<span class="info top right">
-									{#if shot.position === "loading"}
-										<span class="blink">📍</span>
-									{:else if shot.position}
+									{#if shot.position}
 										📍
+									{:else if shot.isAcquiringGPS}
+										<span class="blink">📍</span>
 									{/if}
 								</span>
 								<div class="info bottom left datetime">
