@@ -391,13 +391,15 @@
 								bind:value={shot.latitude}
 								style="width: 5rem;"
 								onpaste={(event) => {
+									event.preventDefault();
 									const pastedText = event.clipboardData.getData("text");
 									const matches = pastedText.match(
-										/^(\d*(?:\.\d*)?)\,\s*(\d*(?:\.\d*)?)$/,
-									); // https://regex101.com/r/P1lqH9/2
+										/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/,
+									); // https://stackoverflow.com/a/3518546
+									console.log(pastedText, matches);
 									if (matches) {
 										shot.latitude = matches[1];
-										shot.longitude = matches[2];
+										shot.longitude = matches[3];
 										return;
 									}
 									shot.latitude = pastedText;
