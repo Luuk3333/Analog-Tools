@@ -38,6 +38,8 @@
 			aperture: currentCameraSettings.current.aperture,
 			shutterSpeed: currentCameraSettings.current.shutterSpeed,
 			position: null,
+			latitude: "",
+			longitude: "",
 			frameNumber: roll.shots.length + 1,
 			date: dt.toLocaleString("sv-SE").slice(0, 10),
 			time: dt.toLocaleString("sv-SE").slice(11, 19),
@@ -299,6 +301,8 @@
 										);
 									} else {
 										setValue(uuid, "position", position);
+										setValue(uuid, "latitude", position.coords.latitude);
+										setValue(uuid, "longitude", position.coords.longitude);
 									}
 								});
 							}
@@ -377,6 +381,22 @@
 							<input type="date" id="shot-date" bind:value={shot.date} />
 							<input type="time" id="shot-time" step="1" bind:value={shot.time} />
 							(local)
+
+							<br />
+
+							<label for="latitude">Lat:</label>
+							<input
+								type="text"
+								id="latitude"
+								bind:value={shot.latitude}
+								style="width: 5rem;" />
+
+							<label for="longitude">Lon:</label>
+							<input
+								type="text"
+								id="longitude"
+								bind:value={shot.longitude}
+								style="width: 5rem;" />
 
 							<br />
 
