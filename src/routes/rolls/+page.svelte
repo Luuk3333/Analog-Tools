@@ -266,6 +266,10 @@
 			{/if}
 			<button
 				onclick={() => {
+					let confirmText = "Are you sure you want to remove this roll";
+					if (roll.shots.length > 0) confirmText += ` and ${roll.shots.length} shots`;
+					confirmText += "?";
+					if (!confirm(confirmText)) return;
 					const index = rolls.current.findIndex((r) => r.id === roll.id);
 					if (index !== -1) {
 						rolls.current.splice(index, 1);
@@ -422,6 +426,8 @@
 
 							<button
 								onclick={() => {
+									if (!confirm("Are you sure you want to remove this shot?"))
+										return;
 									const index = roll.shots.findIndex((r) => r.id === shot.id);
 									if (index !== -1) {
 										roll.shots.splice(index, 1);
