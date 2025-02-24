@@ -286,11 +286,20 @@
 						onclick={() => {
 							const uuid = addShot(roll);
 
+							function setValue(id, key, value) {
+								const index = roll.shots.findIndex((r) => r.id === id);
+								roll.shots[index][key] = value;
+							}
+
+							// Set frame number from previous shot if present
+							if (roll.shots.length >= 2) {
+								const previousShot = roll.shots.at(1); // The shot before the added shot
+								const previousFrameNumber = previousShot.frameNumber;
+								setValue(uuid, "frameNumber", previousFrameNumber + 1);
+							}
+
+							// Get GPS location
 							if (preferences.current.addGPSToNewShots) {
-								function setValue(id, key, value) {
-									const index = roll.shots.findIndex((r) => r.id === id);
-									roll.shots[index][key] = value;
-								}
 								setValue(uuid, "isAcquiringGPS", true);
 								setTimeout(() => {
 									// Stop attempting to aquire location after some time
